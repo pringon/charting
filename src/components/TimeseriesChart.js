@@ -6,8 +6,6 @@ export default TimeseriesChart;
 function TimeseriesChart({
     data,
     dataKeys,
-    height = "300px",
-    width = "500px",
 }) {
     return (
         <ResponsiveContainer height="100%" width="100%" >

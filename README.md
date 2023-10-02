@@ -1,6 +1,11 @@
-# Getting Started with Create React App
+# Charting Playground
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is meant to be a playground for me to improve my data transformation and charting skills with React.
+
+The learning intention is to work towards an ETL/BI framework but I expect to finish my studies before I get there.
+
+_This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+All information below came with the README._
 
 ## Available Scripts
 
