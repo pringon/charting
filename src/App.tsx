@@ -15,20 +15,24 @@ function App() {
   useEffect(() => {
     (async () => {
       const { classifications } = await fetchData();
+      delete classifications["All Fire/Emergency Incidents"];
       const classificationKeys = Object.keys(classifications);
-      const plotData = classifications[classificationKeys[0]].map(datapoint => ({
+      const countsData = classifications[classificationKeys[0]].map(datapoint => ({
         yearmonth: datapoint.yearmonth,
         [classificationKeys[0]]: datapoint.count,
       }));
-      setData(
-        {
-          countsData: classificationKeys.slice(1).reduce((acc, key) =>
-            acc.map((val, index) => ({...val, [key]: classifications[key][index].count})),
-            plotData
-          ),
-          classifications: classificationKeys
+      for (const key of classificationKeys.slice(1)) {
+        for (const index in countsData) {
+          countsData[index] = {
+            ...countsData[index],
+            [key]: classifications[key][index].count,
+          };
         }
-      );
+      }
+      setData({
+        countsData,
+        classifications: classificationKeys
+      });
     })();
   }, []);
   return (
