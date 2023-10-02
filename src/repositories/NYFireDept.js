@@ -25,9 +25,6 @@ async function fetchData() {
     const parsedResponseTime = averageresponsetime.split(":");
     const data = {
       yearmonth: yearmonth,
-      // TODO: There's duplicate yearmonths, group by the value, sum up counts
-      // and weighted average response time. For response time, we should convert
-      // it to a time primite at this point to make operations easier.
       count: Number(incidentcount),
       responseTime: {
         minutes: Number(parsedResponseTime[0]),

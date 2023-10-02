@@ -4,40 +4,35 @@ import TimeseriesChart from "./components/TimeseriesChart";
 import { fetchData } from "./repositories/NYFireDept";
 
 function App() {
-  const [{ labels, counts }, setData] = useState({ labels: [], counts: [] });
+  const [{ classifications, countsData }, setData] = useState({ classifications: [], data: [] });
   useEffect(() => {
     (async () => {
-      const { labels, classifications } = await fetchData();
-      const counts = []
-      for (const classification of Object.keys(classifications)) {
-        if (classification === "All Fire/Emergency Incidents") {
-          continue;
+      const { _labels, classifications } = await fetchData();
+      const classificationKeys = Object.keys(classifications);
+      const plotData = classifications[classificationKeys[0]].map(datapoint => ({
+        yearmonth: datapoint.yearmonth,
+        [classificationKeys[0]]: datapoint.count,
+      }));
+      setData(
+        {
+          countsData: classificationKeys.slice(1).reduce((acc, key) =>
+            acc.map((val, index) => ({...val, [key]: classifications[key][index].count})),
+            plotData
+          ),
+          classifications: classificationKeys
         }
-        console.log(classification, classifications[classification])
-        counts.push(makeDataset(
-          classification,
-          classifications[classification].map(({count}) => count)
-        ));
-      }
-      setData({labels, counts});
+      );
     })();
   }, []);
   return (
-    <div>
+    <div style={{ height: "50vh", width: "90vw" }}>
       <h2>Basic chart of fire department responses</h2>
-      <TimeseriesChart labels={labels} counts={counts} />
+      <TimeseriesChart
+        dataKeys={classifications}
+        data={countsData}
+      />
     </div>
   );
 };
-  
-function makeDataset(label, data) {
-  const randColorPart = () => Math.floor(255 * Math.random());
-  return {
-      label,
-      data,
-      fill: false,
-      borderColor: `rgba(${randColorPart()},${randColorPart()},${randColorPart()},1)`,
-  }
-}
 
 export default App;
