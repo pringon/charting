@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "moduleResolution": "Bundler",
+        "noEmit": true,
+        "module": "ESNext",
+        "jsx": "react"
+    }
+}
