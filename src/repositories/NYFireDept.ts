@@ -1,19 +1,34 @@
-import { ENDPOINT } from "./constants";
+import { ENDPOINT } from "./constants.ts";
 
 export { fetchData };
 
-async function fetchData() {
+type ClassificationDict = { [classification: string]: Classification[] }
+type Classification = {
+  yearmonth: string,
+  count: number,
+  responseTime: ResponseTime,
+};
+type ResponseTime = { minutes: number, seconds: number }
+
+type ResponsePayload = {
+  yearmonth: string,
+  incidentclassification: string,
+  incidentcount: number,
+  averageresponsetime: string,
+};
+
+async function fetchData(): Promise<{ labels: string[], classifications: ClassificationDict }> {
   const res = await fetch(ENDPOINT)
-  const datapoints = await res.json()
+  const datapoints = (await res.json()) as ResponsePayload[]
   datapoints.sort((a, b) => {
     if (a.yearmonth === b.yearmonth) {
         return 0
     }
     return a.yearmonth < b.yearmonth ? -1 : 1
   });
-  const labels = [];
-  const classifications = {};
-  let prev = undefined;
+  const labels: string[] = [];
+  const classifications: ClassificationDict = {};
+  let prev: string | null = null;
   for (let { yearmonth, incidentclassification, incidentcount, averageresponsetime } of datapoints) {
     if (yearmonth.includes("FY")) {
       continue;
@@ -58,6 +73,6 @@ async function fetchData() {
   return {labels, classifications};
 }
 
-function responseTimeAsSeconds(responseTime) {
+function responseTimeAsSeconds(responseTime: ResponseTime): number {
     return responseTime.minutes * 60 + responseTime.seconds;
 }
