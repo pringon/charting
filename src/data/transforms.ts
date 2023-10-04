@@ -1,6 +1,6 @@
-export { getUnique, groupBy, mapRecord, reduceRecord }
+export { dropDuplicates, groupBy, transformRecord }
 
-function getUnique<T extends object, U extends keyof T>(data: T[], key: U): T[U][] {
+function dropDuplicates<T extends object, U extends keyof T>(data: T[], key: U): T[U][] {
   const uniqueValues: T[U][] = [];
   let prev: T[U] = null;
   for (const datapoint of data) {
@@ -25,24 +25,13 @@ function groupBy<T>(data: T[], key: string): Record<string, T[]> {
   return aggregatedData;
 }
 
-// TODO: Find a better way to copy non-primitive types such that users don't need to pass a
-// constructor function
-function reduceRecord<T, U>(
+function transformRecord<T, U>(
   data: Record<string, T[]>,
-  reducer: (acc: U, val: T, index: number) => U,
-  startingValue: () => U
+  transform: (arr: T[]) => U
 ): Record<string, U> {
-  const reducedRecord: Record<string, U> = {};
+  const transformedRecord: Record<string, U> = {};
   for (const key of Object.keys(data)) {
-    reducedRecord[key] = data[key].reduce(reducer, startingValue());
+    transformedRecord[key] = transform(data[key]);
   }
-  return reducedRecord; 
-}
-  
-function mapRecord<T, U>(data: Record<string, T[]>, mapper: (T) => U): Record<string, U[]> {
-  const mappedRecord: Record<string, U[]> = {};
-  for (const key in Object.keys(data)) {
-    mappedRecord[key] = data[key].map(mapper);
-  }
-  return mappedRecord;
+  return transformedRecord;
 }

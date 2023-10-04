@@ -1,8 +1,8 @@
-import { ENDPOINT, GENERIC_CLASSIFICATION } from "./constants.ts";
+import { ENDPOINT, GENERIC_CLASSIFICATION, GENERIC_BOROUGH } from "./constants.ts";
 
-export { fetchData, mergeMetrics, ClassificationDict, Datapoint, GENERIC_CLASSIFICATION };
+export { fetchData, mergeMetrics, GroupedMetrics, Datapoint, GENERIC_CLASSIFICATION, GENERIC_BOROUGH };
 
-type ClassificationDict = { [classification: string]: Datapoint[] }
+type GroupedMetrics = { [key: string]: Datapoint[] }
 type Datapoint = AggregatableProperties & NonAggregatableProperties;
 type AggregatableProperties = {
   yearmonth: string,
@@ -60,9 +60,7 @@ function mergeMetrics(prev: Datapoint, curr: Datapoint): Datapoint {
       (prev.count + curr.count)
   );
   return {
-    yearmonth: prev.yearmonth,
-    classification: prev.classification,
-    borough: prev.borough,
+    ...prev,
     count: prev.count + curr.count,
     responseTime: {
       minutes: Math.floor(aggregateTimeInSeconds / 60),
