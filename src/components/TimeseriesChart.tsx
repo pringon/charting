@@ -11,8 +11,6 @@ function TimeseriesChart({
     return (
         <ResponsiveContainer height="100%" width="100%" >
             <LineChart
-                width={300}
-                height={500}
                 data={data}
                 margin={{
                     top: 5,
@@ -45,11 +43,11 @@ function TimeseriesChart({
     )
 }
 
-function formatLargeInts(number) {
+function formatLargeInts(number: number): string {
     const bil = 1_000_000_000,
           mil = 1_000_000,
           kil = 1_000;
-    const floatAsString = num => num.toFixed(2).toString();
+    const floatAsString = (num: number) => num.toFixed(2).toString();
     if (number > bil) {
       return floatAsString(number / bil) + 'B';
     }
